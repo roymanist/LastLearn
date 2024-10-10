@@ -29,6 +29,13 @@ private final NoteRepository repository;
     }
 
     @Override
+    public List<Note> createNoteFull(Note note) {
+
+        repository.save(note);
+        return repository.findAll();
+    }
+
+    @Override
     public List<Note> deleteNote(Note note) {
         return null;
     }
@@ -39,4 +46,11 @@ private final NoteRepository repository;
         System.out.println("Success delete note");
         return repository.findAll();
     }
+
+    @Override
+    public List<Note> findByName(String name) {
+
+        return repository.findByName(name);
+    }
+
 }
