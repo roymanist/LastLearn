@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/v1/notes")
@@ -21,6 +22,7 @@ public class NoteController {
 
     private NoteService service;
     private Map<String, Object> response;
+
     @GetMapping("/read")
 public List<Note> readNoteDB(){
         return service.readNoteDB();
@@ -32,15 +34,20 @@ public List<Note> readNoteDB(){
         return service.createNote(NameNote,TextNote);
     }
 
-
     @PostMapping("/createFull")
-    public Map<String, Object> createNoteFull(@RequestBody NoteDTO noteDTO)
+    public ResponseEntity<?>  createNoteFull(@RequestBody NoteDTO noteDTO)
     {
-        response = new HashMap<>();
-        service.createNoteFull(noteDTO);
-        response.put("message", "Сохранение успешно");
+         final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$";
 
-        return response;
+         if(Pattern.matches(EMAIL_REGEX, noteDTO.getEmail())==false){
+             return ResponseEntity.status(HttpStatus.CONFLICT)
+                     .body("Ошибка: указанный email: " + noteDTO.getEmail() + " не является email адресом");
+         }else {
+             service.createNoteFull(noteDTO);
+             return ResponseEntity.status(HttpStatus.OK)
+                     .body("Заметка успешно создана");
+         }
+
     }
 
 
