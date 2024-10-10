@@ -1,10 +1,12 @@
 package com.NotebookPB.HopeFinish.service;
 
 import com.NotebookPB.HopeFinish.model.Note;
+import com.NotebookPB.HopeFinish.model.NoteDTO;
 import com.NotebookPB.HopeFinish.repository.NoteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -29,10 +31,17 @@ private final NoteRepository repository;
     }
 
     @Override
-    public List<Note> createNoteFull(Note note) {
+    public void createNoteFull(NoteDTO noteDTO) {
+        Note note = new Note();
 
+
+        note.setName(noteDTO.getName());
+        note.setText(noteDTO.getText());
+        note.setEmail(noteDTO.getEmail());
+        note.setDateCreate(LocalDateTime.now());
+        note.setDateLastChange(LocalDateTime.now());
         repository.save(note);
-        return repository.findAll();
+
     }
 
     @Override

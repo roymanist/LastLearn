@@ -1,6 +1,7 @@
 package com.NotebookPB.HopeFinish.controller;
 
 import com.NotebookPB.HopeFinish.model.Note;
+import com.NotebookPB.HopeFinish.model.NoteDTO;
 import com.NotebookPB.HopeFinish.service.NoteService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -33,11 +34,12 @@ public List<Note> readNoteDB(){
 
 
     @PostMapping("/createFull")
-    public Map<String, Object> createNoteFull(@RequestBody Note note)
+    public Map<String, Object> createNoteFull(@RequestBody NoteDTO noteDTO)
     {
         response = new HashMap<>();
+        service.createNoteFull(noteDTO);
         response.put("message", "Сохранение успешно");
-        response.put("notes", service.createNoteFull(note));
+
         return response;
     }
 
