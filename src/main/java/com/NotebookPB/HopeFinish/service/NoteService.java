@@ -4,6 +4,7 @@ import com.NotebookPB.HopeFinish.model.Note;
 import com.NotebookPB.HopeFinish.model.NoteDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NoteService {
 
@@ -13,6 +14,8 @@ public interface NoteService {
     List<Note> deleteNote(Note note);
     List<Note> deleteByName(String name);
     List<Note> findByName(String name);
+    Note findById(Long id);
+
 
 
 

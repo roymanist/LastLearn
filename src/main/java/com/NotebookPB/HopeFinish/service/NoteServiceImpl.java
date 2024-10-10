@@ -3,11 +3,13 @@ package com.NotebookPB.HopeFinish.service;
 import com.NotebookPB.HopeFinish.model.Note;
 import com.NotebookPB.HopeFinish.model.NoteDTO;
 import com.NotebookPB.HopeFinish.repository.NoteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -17,6 +19,9 @@ private final NoteRepository repository;
     @Override
     public List<Note> readNoteDB() {
         return repository.findAll();
+    }
+    public Note findById(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
     @Override
@@ -61,5 +66,8 @@ private final NoteRepository repository;
 
         return repository.findByName(name);
     }
+
+
+
 
 }
