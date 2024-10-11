@@ -9,13 +9,12 @@ import java.util.Optional;
 public interface NoteService {
 
     List<Note> readNoteDB();
-    List<Note> createNote(String nameNote, String textNote);
+    void createNote(String nameNote, String textNote, String email);
     void createNoteFull(NoteDTO noteDTO);
-    List<Note> deleteNote(Note note);
-    List<Note> deleteByName(String name);
+    void deleteById(Long id);
     List<Note> findByName(String name);
     Note findById(Long id);
-
+    void updateNote(Note note,NoteDTO noteDTO);
 
 
 

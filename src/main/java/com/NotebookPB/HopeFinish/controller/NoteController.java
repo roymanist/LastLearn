@@ -30,9 +30,19 @@ public List<Note> readNoteDB(){
     }
 
     @GetMapping("/create")
-    public List<Note> createNote(@RequestParam String NameNote, @RequestParam String TextNote)
+    public ResponseEntity<?>  createNote(@RequestParam String NameNote, @RequestParam String TextNote, @RequestParam String email)
     {
-        return service.createNote(NameNote,TextNote);
+        final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}$";
+
+        if(Pattern.matches(EMAIL_REGEX, email)==false){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Ошибка: указанный email: " + email + " не является email адресом");
+        }else {
+            service.createNote(NameNote,TextNote,email);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Заметка успешно создана");
+        }
+
     }
 
     @PostMapping("/createFull")
@@ -52,25 +62,34 @@ public List<Note> readNoteDB(){
     }
 
 
-    @DeleteMapping("/deleteByName/{nameNote}")
+    @DeleteMapping("/deleteById/{idNote}")
     @Transactional
-    public ResponseEntity<?> deleteByNote(@PathVariable String nameNote) {
-        List<Note> notesToDelete = service.findByName(nameNote);  // Находим объекты без удаления
+    public ResponseEntity<?> deleteByNote(@PathVariable Long idNote) {
+       Note notesToDelete = service.findById(idNote);  // Находим объекты без удаления
 
-        if (notesToDelete.size() > 1) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body("Ошибка: найдено больше одного объекта с названием: " + nameNote + ". Удаление заблокировано.");
-        } else if (notesToDelete.size() == 1) {
+        if (notesToDelete != null) {
             // Удаляем только если найден один объект
-            service.deleteByName(nameNote);
+            service.deleteById(idNote);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("Объект с названием " + nameNote + " успешно удален.");
+                    .body("Объект с ID " + idNote + " успешно удален.");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Не найдено объектов с названием: " + nameNote);
+                    .body("Не найдено объектов с ID: " + idNote);
         }
     }
 
+    @PutMapping("/update/{idNote}")
+    public ResponseEntity<?> updateNote(@PathVariable Long idNote,@RequestBody NoteDTO noteDTO) {
+
+        Note updNote = service.findById(idNote);
+        if(updNote==null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("Не найдено объектов с ID: " + idNote);}
+        else {service.updateNote(updNote,noteDTO);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Объект с ID " + idNote + " успешно изменен.");
+        }
+    }
 
 }
 
